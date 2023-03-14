@@ -1,51 +1,35 @@
 #include <iostream>
+#include "R-Types.h"
+#include "I-Types.h"
+#include "helperFunctions.h"
+#include "J-Types.h"
+
 uint32_t PC = 0;
 uint32_t REGS[32];
 uint32_t IMEM[16384] = {
-    0x214A0001, // Addi t2, t2, 1
+    0x200A0002, // Addi t2, zero, 2
     0x216B0005, // Addi t3, t3, 5
-    0x014B4815 // Addu t1, t2, t3
+    0x014B4815, // Addu t1, t2, t3
+    0x20080016, // Addi t0, zero, 22
+    0x11090006, // BEQ t0, t1, line 6 (Jump to line 7 if t1 = 6)
+    0x08000000, // Jump to line 0
+    0xAFA90000, // SW t1, 0(sp)
+    0x00000000,
+    0x00000000,
 }; // 2^14
+
+
+//syscal = 0x0000000C
+
 uint32_t DMEM[16384];
 
 bool running = true;
 
 using namespace std;
 
-void printInBinary(int num) {
-    cout << num << " in binary is: ";
-    for (int i = 0; i < 32; i++) {
-        std::cout << ((num >> (31-i)) & 1);
-    }
-    cout << endl;
-}
-
-void exec_ADDU(int rd, int rs, int rt) {
-    cout << "Execute ADDU" << endl;
-    REGS[rd] = REGS[rs] + REGS[rt];
-}
-
-void exec_ADDI(int rs, int rt, int immediate) {
-    cout << "Execute ADDI" << endl;
-    REGS[rs] = REGS[rt] + immediate;
-}
-
 
 int fetchInstruction() {
     return IMEM[PC];
-}
-
-void exec_RTYPE(int rs, int rt, int rd, int shamt, int funct) {
-    switch (funct)
-    {
-    case 21:
-        exec_ADDU(rd, rs, rt);
-        return;
-
-    default:
-        cout << "ERROR: Invalid Funct Code!" << endl;
-        break;
-    }
 }
 
 void decodeAndExecute(int instruction) {
@@ -78,7 +62,7 @@ void decodeAndExecute(int instruction) {
 
         exec_RTYPE(rs, rt, rd, shamt, funct);
     }
-    else if (opcode == 8) { // Addi
+    else if (isI_Type(opcode)) { // Addi
         int mask = 31; // 31 = 11111 
         int rs = (instruction >> 21) & mask; //Shift 21 and get the last 5 bits
         int rt = (instruction >> 16) & mask;
@@ -87,7 +71,11 @@ void decodeAndExecute(int instruction) {
         std::cout << "rt: " << rt << std::endl;
         std::cout << "immediate: " << immediate << std::endl;
 
-        exec_ADDI(rs, rt, immediate);
+        exec_ITYPE(opcode, rs, rt, immediate);
+    }
+    else {
+        int address = instruction & 0x00111111;
+        exec_JTYPE(opcode, address);
     }
 
     cout << "--------" << endl;
@@ -95,10 +83,8 @@ void decodeAndExecute(int instruction) {
 
 int main()
 {
-    
-    //int instruction = 0x014B4815; // Addu t1, t2, t3
-    //int instruction = 0x21290001; // Addi t1, t1, 1
 
+    REGS[29] = 16380; // $sp
 
     while (running) {
         int instruction = fetchInstruction();
@@ -106,11 +92,17 @@ int main()
         PC++;
     }
 
-    
     cout << "---------" << endl;
     cout << "Final register states: " << endl;
     for (int i = 0; i < 32; i++) {
         cout << i << ": " << REGS[i] << endl;
+    }
+    cout << "---------" << endl;
+    cout << "Final memory states:" << endl;
+    for (int i = 0; i < 16384; i++) {
+        if (DMEM[i] != 0) {
+            cout << i << ": " << DMEM[i] << endl;
+        }
     }
 
     std::cin.get();

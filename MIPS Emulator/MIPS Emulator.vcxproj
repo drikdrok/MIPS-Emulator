@@ -141,6 +141,12 @@
   <ItemGroup>
     <ClCompile Include="MIPS Emulator.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helperFunctions.h" />
+    <ClInclude Include="I-Types.h" />
+    <ClInclude Include="J-Types.h" />
+    <ClInclude Include="R-Types.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

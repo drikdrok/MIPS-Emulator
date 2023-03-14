@@ -19,4 +19,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="R-Types.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helperFunctions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="I-Types.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="J-Types.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
