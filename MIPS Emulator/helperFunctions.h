@@ -12,6 +12,13 @@ void printInBinary(int num) {
     cout << endl;
 }
 
+void printShortInBinary(short num) {
+    cout << num << " in binary is: ";
+    for (int i = 0; i < 16; i++) {
+        std::cout << ((num >> (15 - i)) & 1);
+    }
+    cout << endl;
+}
 
 vector<int> iTypes = {4, 8, 9, 35, 43};
 bool isI_Type(int opcode) {

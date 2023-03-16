@@ -14,7 +14,9 @@ uint32_t IMEM[16384] = {
     0x11090006, // BEQ t0, t1, line 6 (Jump to line 7 if t1 = 6)
     0x08000000, // Jump to line 0
     0xAFA90000, // SW t1, 0(sp)
-    0x00000000,
+    0x23BDFFFF, // Addi sp sp -1
+    0xAFA90000, // SW t1, 0(sp)
+    0b10001111101110000000000000000000, // LW t8, 0(sp)
     0x00000000,
 }; // 2^14
 
@@ -32,7 +34,7 @@ int fetchInstruction() {
     return IMEM[PC];
 }
 
-void decodeAndExecute(int instruction) {
+void decodeAndExecute(uint32_t instruction) {
     //DECODE
 
     if (instruction == 0) {
@@ -66,15 +68,16 @@ void decodeAndExecute(int instruction) {
         int mask = 31; // 31 = 11111 
         int rs = (instruction >> 21) & mask; //Shift 21 and get the last 5 bits
         int rt = (instruction >> 16) & mask;
-        int immediate = instruction & (int)pow(2, 15)-1; // Ask Balkind why no 0x00001111
+        short immediate = instruction & (int)pow(2, 16)-1; // Ask Balkind why no 0x00001111
         std::cout << "rs: " << rs << std::endl;
         std::cout << "rt: " << rt << std::endl;
         std::cout << "immediate: " << immediate << std::endl;
+        printShortInBinary(immediate);
 
         exec_ITYPE(opcode, rs, rt, immediate);
     }
     else {
-        int address = instruction & 0x00111111;
+        int address = instruction & 0b00000011111111111111111111111111;
         exec_JTYPE(opcode, address);
     }
 
