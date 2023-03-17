@@ -27,5 +27,13 @@ A converter such as [this one](https://www.eg.bucknell.edu/~csci320/mips_web/) c
 
 You can toggle how much information is shown with the variable 'detailedOutput' - this will make it run a lot faster.
 
+---
+# SYSCALL
+The instruction SYSCALL has hexcode 0x0000000C
 
+There are 2 supported arguments for SYSCALL:
+* a0 = 1: print out $v0 to the printlog (everything will be printed once the program has terminated)
+* a0 = 10: exit code (program is terminated)
+
+Alternatively, program will terminate once the last line of code has been executed
 
