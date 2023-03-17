@@ -4,7 +4,10 @@
 
 using namespace std;
 
+extern bool detailedOutput;
+
 void printInBinary(int num) {
+    if (!detailedOutput) return;
     cout << num << " in binary is: ";
     for (int i = 0; i < 32; i++) {
         std::cout << ((num >> (31 - i)) & 1);
@@ -13,6 +16,7 @@ void printInBinary(int num) {
 }
 
 void printShortInBinary(short num) {
+    if (!detailedOutput) return;
     cout << num << " in binary is: ";
     for (int i = 0; i < 16; i++) {
         std::cout << ((num >> (15 - i)) & 1);
